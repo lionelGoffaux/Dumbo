@@ -1,10 +1,8 @@
-program: TXT | TXT program
-       | dumbo_block | dumbo_block program
+program: (TXT|dumbo_block)+
 
 dumbo_block: "{{" expressions_list "}}"
 
-expressions_list: expression ";" expressions_list
-                | expression ";"
+expressions_list: (expression ";")+
 
 expression: "print" string_expression -> print
           | "for" VARIABLE "in" string_list "do" expressions_list "endfor" -> for
@@ -16,9 +14,7 @@ string_expression: STRING
                  | VARIABLE
                  | string_expression "." string_expression
 
-string_list: "(" string_list_iterator ")"
-
-string_list_iterator: STRING | STRING "," string_list_iterator
+string_list: "(" STRING ("," STRING)* ")"
 
 TXT: /((?!{{).)+/
 STRING: "'" _STRING_ESC_INNER "'"
