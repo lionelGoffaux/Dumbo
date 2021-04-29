@@ -10,9 +10,7 @@ expression: "print" string_expression -> print
           | VARIABLE ":=" string_expression -> assign
           | VARIABLE ":=" string_list -> assign
 
-string_expression: STRING
-                 | VARIABLE
-                 | string_expression "." string_expression
+string_expression: (STRING | VARIABLE) ("." (STRING | VARIABLE))*
 
 string_list: "(" STRING ("," STRING)* ")"
 
@@ -21,5 +19,6 @@ STRING: "'" _STRING_ESC_INNER "'"
 
 %import common._STRING_ESC_INNER
 %import common.CNAME -> VARIABLE
+%import common.INT
 %import common.WS
 %ignore WS
