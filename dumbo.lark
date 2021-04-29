@@ -5,15 +5,19 @@ dumbo_block: "{{" expressions_list "}}"
 expressions_list: (expression ";")+
 
 expression: "print" string_expression -> print
-          | "for" VARIABLE "in" string_list "do" expressions_list "endfor" -> for
-          | "for" VARIABLE "in" VARIABLE "do" expressions_list "endfor" -> for
-          | VARIABLE ":=" string_expression -> assign
-          | VARIABLE ":=" string_list -> assign
+          | "for" VARIABLE "in" (string_list|VARIABLE) "do" expressions_list "endfor" -> for
+          | VARIABLE ":=" (string_expression|string_list|arithmetic_expression) -> assign
+
+?arithmetic_expression: (INT|VARIABLE)
+                     | arithmetic_expression ADD_OP arithmetic_expression
+                     | arithmetic_expression MULL_OP arithmetic_expression
 
 string_expression: (STRING | VARIABLE) ("." (STRING | VARIABLE))*
 
 string_list: "(" STRING ("," STRING)* ")"
 
+ADD_OP: "+" | "-"
+MULL_OP: "*" | "/"
 TXT: /((?!{{).)+/
 STRING: "'" _STRING_ESC_INNER "'"
 
