@@ -6,18 +6,27 @@ expressions_list: (expression ";")+
 
 expression: "print" string_expression -> print
           | "for" VARIABLE "in" (string_list|VARIABLE) "do" expressions_list "endfor" -> for
-          | VARIABLE ":=" (string_expression|string_list|arithmetic_expression) -> assign
+          | "if" boolean_expression "do" expressions_list "endif" -> if
+          | VARIABLE ":=" (string_expression|string_list|arithmetic_expression|boolean_expression) -> assign
 
-?arithmetic_expression: (INT|VARIABLE)
-                     | arithmetic_expression ADD_OP arithmetic_expression
-                     | arithmetic_expression MULL_OP arithmetic_expression
+?arithmetic_expression: arithmetic_expression ADD_OP arithmetic_expression
+                      | arithmetic_expression MULL_OP arithmetic_expression
+                      | (INT|VARIABLE)
 
-string_expression: (STRING | VARIABLE) ("." (STRING | VARIABLE))*
+?string_expression: string_expression "." string_expression
+                 | (STRING | VARIABLE)
+
+boolean_expression: boolean_expression LOG_OP boolean_expression
+                  | arithmetic_expression COMP_OP arithmetic_expression
+                  | "true" -> true
+                  | "false" -> false
 
 string_list: "(" STRING ("," STRING)* ")"
 
 ADD_OP: "+" | "-"
 MULL_OP: "*" | "/"
+LOG_OP: "and" | "or"
+COMP_OP: "<" | ">" | "=" | "!="
 TXT: /((?!{{).)+/
 STRING: "'" _STRING_ESC_INNER "'"
 
