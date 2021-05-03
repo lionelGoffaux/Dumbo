@@ -1,20 +1,20 @@
 program: (TXT|dumbo_block)+
 
-dumbo_block: "{{" expressions_list "}}"
+?dumbo_block: "{{" expressions_list "}}"
 
 expressions_list: (expression ";")+
 
-expression: "print" string_expression -> print
-          | "for" VARIABLE "in" (string_list|VARIABLE) "do" expressions_list "endfor" -> for
-          | "if" boolean_expression "do" expressions_list "endif" -> if
-          | VARIABLE ":=" (string_expression|string_list|arithmetic_expression|boolean_expression) -> assign
+expression: "print" string_expression -> print_statement
+          | "for" VARIABLE "in" (string_list|VARIABLE) "do" expressions_list "endfor" -> for_statement
+          | "if" boolean_expression "do" expressions_list "endif" -> if_statement
+          | VARIABLE ":=" (string_expression|string_list) -> assign
 
 ?arithmetic_expression: arithmetic_expression ADD_OP arithmetic_expression
                       | arithmetic_expression MULL_OP arithmetic_expression
                       | (INT|VARIABLE)
 
 ?string_expression: string_expression "." string_expression
-                 | (STRING | VARIABLE)
+                  | (STRING | arithmetic_expression | boolean_expression)
 
 boolean_expression: boolean_expression LOG_OP boolean_expression
                   | arithmetic_expression COMP_OP arithmetic_expression
