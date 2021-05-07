@@ -4,7 +4,10 @@ les \*
 error variable existe pas
 error iterator pas iterable
 error parser lark (voir github)
+opti parser
+argh
 print -> dumbo style
+if var ? tester
 
 doc
 tests?

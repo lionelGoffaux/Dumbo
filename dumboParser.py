@@ -210,6 +210,8 @@ class DumboTransformer(Transformer):
         return text
 
 
+primitives = [int, list, bool, str]
+
 with open('dumbo.lark', 'r') as f:
     grammar = f.read()
 
