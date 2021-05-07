@@ -6,9 +6,9 @@
 </head>
 <body>
     {{
-     a := ('false', 'test');
-
-     print a.liste_label;
+     if true do
+     print t;
+     endif;
     }}
 </body>
 </html>
