@@ -30,13 +30,28 @@ class Interpreter(Visitor):
         self.scope = Scope()
 
     def visit_print_element(self, element: dp.PrintElement) -> None:
-        pass
+        if type(element.str_expression) in [str, int, bool]:
+            print(element.str_expression)
+        else:
+            print(element.str_expression.accept(self))
 
     def visit_for_element(self, element: dp.ForElement) -> None:
-        pass
+        if type(element.iterator) is VariableElement:
+            iterator = element.iterator.accept(self)
+        else:
+            iterator = element.iterator
+        for string in iterator:
+            self.scope[element.iterator_var.name] = string
+            element.expressions_list.accept(self)
 
     def visit_se_element(self, element: dp.SEElement) -> str:
-        pass
+        res = ''
+        for e in element.subExpressions:
+            if type(e) is str:
+                res += e
+            else:
+                res += str(e.accept(self))
+        return res
 
     def visit_ae_element(self, element: dp.AEElement) -> int:
         operations = {
@@ -77,7 +92,10 @@ class Interpreter(Visitor):
         self.scope = self.scope.parents
 
     def visit_assign_element(self, element: dp.AssignElement) -> None:
-        pass
+        if type(element.value) is dp.SEElement:
+            self.scope[element.variable] = element.value.accept(self)
+        else:
+            self.scope[element.variable] = element.value
 
     def visit_program_element(self, element: dp.ProgramElement) -> None:
         for el in element.content:
