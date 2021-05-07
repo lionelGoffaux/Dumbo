@@ -91,7 +91,7 @@ class BEElement(DumboElement):
 
 class AssignElement(ExpressionElement):
 
-    def __init__(self, variable: str, value: Union[SEElement, list[str]]):
+    def __init__(self, variable: VariableElement, value: Union[SEElement, AEElement, BEElement, list[str], int, str]):
         self.variable = variable
         self.value = value
 
@@ -155,7 +155,7 @@ class DumboTransformer(Transformer):
         return string_expression
 
     def print_statement(self, str_expression):
-        print_statement = PrintElement(str_expression)
+        print_statement = PrintElement(str_expression[0])
         #print('print', print_statement)
         return print_statement
 
@@ -172,15 +172,15 @@ class DumboTransformer(Transformer):
     def assign(self, pair):
         assignation = AssignElement(*pair)
         #print('assign', assignation)
-        return pair
+        return assignation
 
     def string_list(self, string_list):
         #print('str list', string_list)
         return string_list
 
     def string(self, string):
-        string = string[0][1:-1]
-        #print('string', string)
+        string = string[0][1:-1].replace('\\n', '\n')
+        #print('string', string.__repr__())
         return string
 
     def integer(self, integer):
@@ -197,12 +197,12 @@ class DumboTransformer(Transformer):
     def true(self, item):
         item = bool(item)
         #print('bool', item)
-        return item
+        return True
 
     def false(self, item):
         item =bool(item)
         #print('bool', item)
-        return item
+        return False
 
     def txt(self, text):
         text = str(text[0])

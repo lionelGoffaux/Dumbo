@@ -3,6 +3,7 @@ from typing import Union
 import dumboParser as dp
 from visitors import Visitor
 from collections import ChainMap
+import argh
 
 
 class Scope(ChainMap):
@@ -31,12 +32,12 @@ class Interpreter(Visitor):
 
     def visit_print_element(self, element: dp.PrintElement) -> None:
         if type(element.str_expression) in [str, int, bool]:
-            print(element.str_expression)
+            print(element.str_expression, end='')
         else:
-            print(element.str_expression.accept(self))
+            print(element.str_expression.accept(self), end='')
 
     def visit_for_element(self, element: dp.ForElement) -> None:
-        if type(element.iterator) is VariableElement:
+        if type(element.iterator) is dp.VariableElement:
             iterator = element.iterator.accept(self)
         else:
             iterator = element.iterator
@@ -47,8 +48,8 @@ class Interpreter(Visitor):
     def visit_se_element(self, element: dp.SEElement) -> str:
         res = ''
         for e in element.subExpressions:
-            if type(e) is str:
-                res += e
+            if type(e) in [str, int, bool]:
+                res += str(e)
             else:
                 res += str(e.accept(self))
         return res
@@ -79,9 +80,9 @@ class Interpreter(Visitor):
         }
         left = element.left
         right = element.right
-        if type(left) is not bool:
+        if type(left) not in [bool, int]:
             left = left.accept(self)
-        if type(right) is not bool:
+        if type(right) not in [bool, int]:
             right = right.accept(self)
         return operations[element.op](left, right)
 
@@ -92,15 +93,15 @@ class Interpreter(Visitor):
         self.scope = self.scope.parents
 
     def visit_assign_element(self, element: dp.AssignElement) -> None:
-        if type(element.value) is dp.SEElement:
-            self.scope[element.variable] = element.value.accept(self)
+        if type(element.value) in [str, int, bool, list]:
+            self.scope[element.variable.name] = element.value
         else:
-            self.scope[element.variable] = element.value
+            self.scope[element.variable.name] = element.value.accept(self)
 
     def visit_program_element(self, element: dp.ProgramElement) -> None:
         for el in element.content:
             if type(el) is str:
-                print(el)
+                print(el, end='')
             else:
                 el.accept(self)
 
@@ -110,5 +111,20 @@ class Interpreter(Visitor):
         raise ValueError
 
     def visit_if_element(self, element: dp.IfElement) -> None:
-        if element.boolean_expression.accept(self):
+        condition = element.boolean_expression if type(element.boolean_expression) is bool \
+            else element.boolean_expression.accept(self)
+
+        if condition:
             element.expressions_list.accept(self)
+
+
+def main(src_file_name):
+    with open(src_file_name) as src_file:
+        src = src_file.read()
+    program = dp.dumbo_parser.parse(src)
+    interpreter = Interpreter()
+    program.accept(interpreter)
+
+
+if __name__ == '__main__':
+    main("test.dumbo")

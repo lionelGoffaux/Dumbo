@@ -11,6 +11,7 @@ expression: "print" string_expression -> print_statement
 
 ?arithmetic_expression: arithmetic_expression ADD_OP arithmetic_expression
                       | arithmetic_expression MULL_OP arithmetic_expression
+                      | "(" arithmetic_expression ")"
                       | (integer|variable)
 
 ?string_expression: string_expression "." string_expression
@@ -25,7 +26,7 @@ string_list: "(" string ("," string)* ")"
 variable: CNAME
 integer: INT
 string: ESCAPED_STRING
-txt: /((?!{{).)+/
+txt: /((?!{{)(.|\n))+/
 
 ADD_OP: "+" | "-"
 MULL_OP: "*" | "/"
