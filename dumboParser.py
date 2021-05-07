@@ -46,7 +46,7 @@ class PrintElement(ExpressionElement):
 
 class ForElement(ExpressionElement):
 
-    def __init__(self, iterator_var: str, iterator: Union[str, list[str]],
+    def __init__(self, iterator_var: VariableElement, iterator: Union[VariableElement, list[str]],
                  expressions_list: ExpressionsListElement):
         self.iterator_var = iterator_var
         self.iterator = iterator
@@ -58,10 +58,8 @@ class ForElement(ExpressionElement):
 
 class SEElement(DumboElement):
 
-    def __init__(self, left: Union[str, AEElement, BEElement, SEElement],
-                 right: Union[str, AEElement, BEElement, SEElement]):
-        self.left = left
-        self.right = right
+    def __init__(self, subExpressions: list[Union[str, AEElement, BEElement, SEElement]]):
+        self.subExpressions = subExpressions
 
     def accept(self, visitor: Visitor) -> str:
         return visitor.visit_se_element(self)
@@ -128,82 +126,80 @@ class ProgramElement(DumboElement):
 class DumboTransformer(Transformer):
 
     def program(self, items):
-        print('program', items)
-        return items
+        program = ProgramElement(items)
+        #print('program', program)
+        return program
 
     def expressions_list(self, items):
-        print('expressions_list', items)
-        return items
+        expression_list = ExpressionsListElement(items)
+        #print('expressions_list', expression_list)
+        return expression_list
 
     def arithmetic_expression(self, items):
-        print('arithmetic_expression', items)
-        return items
+        arithmetic_expression = AEElement(str(items[1]), items[0], items[2])
+        #print('arithmetic_expression', arithmetic_expression)
+        return arithmetic_expression
 
     def boolean_expression(self, items):
         print('boolean_expression', items)
         return items
 
     def string_expression(self, items):
-        print('string_expression', items)
-        return items
+        string_expression = SEElement(items)
+        #print('string_expression', string_expression)
+        return string_expression
 
     def print_statement(self, str_expression):
-        print('print', str_expression)
-        return str_expression
-        return PrintElement(str_expression)
+        print_statement = PrintElement(str_expression)
+        #print('print', print_statement)
+        return print_statement
 
     def for_statement(self, items):
-        print('for', items)
-        return items
+        for_state = ForElement(*items)
+        #print('for', for_state)
+        return for_state
 
     def if_statement(self, items):
-        print('if', items)
-        return items
+        if_state = IfElement(*items)
+        #print('if', if_state)
+        return if_state
 
     def assign(self, pair):
-        print('assign', pair)
+        assignation = AssignElement(*pair)
+        #print('assign', assignation)
         return pair
 
     def string_list(self, string_list):
-        print('str list', string_list)
+        #print('str list', string_list)
         return string_list
 
+    def string(self, string):
+        string = string[0][1:-1]
+        #print('string', string)
+        return string
+
+    def integer(self, integer):
+        integer = int(integer[0])
+        #print('integer', integer)
+        return int(integer)
+
+    def variable(self, name):
+        name = name[0]
+        variable = VariableElement(name)
+        #print('variable', variable)
+        return variable
+
     def true(self, item):
-        print('true', item)
+        item = bool(item)
+        #print('bool', item)
         return item
 
     def false(self, item):
-        print('false', item)
+        item =bool(item)
+        #print('bool', item)
         return item
 
-    def MULL_OP(self, mull_op):
-        print(mull_op)
-        return mull_op
-
-    def LOG_OP(self, log_op):
-        print(log_op)
-        return log_op
-
-    def COMP_OP(self, comp):
-        print(comp)
-        return comp
-
-    def ADD_OP(self, add):
-        print('Add', add)
-        return add
-
-    def STRING(self, string):
-        print('string', string)
-        return string
-
-    def INT(self, item):
-        print('item', item)
-        return item
-
-    def VARIABLE(self, name):
-        print('variable', name)
-        return name
-
-    def TXT(self, text):
-        print('Txt', text)
+    def txt(self, text):
+        text = str(text[0])
+        #print('Txt', text)
         return text
