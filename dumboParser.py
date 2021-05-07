@@ -58,8 +58,8 @@ class ForElement(ExpressionElement):
 
 class SEElement(DumboElement):
 
-    def __init__(self, subExpressions: list[Union[str, AEElement, BEElement, SEElement]]):
-        self.subExpressions = subExpressions
+    def __init__(self, sub_expressions: list[Union[str, AEElement, BEElement, SEElement]]):
+        self.subExpressions = sub_expressions
 
     def accept(self, visitor: Visitor) -> str:
         return visitor.visit_se_element(self)
@@ -129,84 +129,82 @@ class DumboTransformer(Transformer):
 
     def program(self, items):
         program = ProgramElement(items)
-        #print('program', program)
+        # print('program', program)
         return program
 
     def expressions_list(self, items):
         expression_list = ExpressionsListElement(items)
-        #print('expressions_list', expression_list)
+        # print('expressions_list', expression_list)
         return expression_list
 
     def arithmetic_expression(self, items):
         items[1] = str(items[1])
         arithmetic_expression = AEElement(*items)
-        #print('arithmetic_expression', arithmetic_expression)
+        # print('arithmetic_expression', arithmetic_expression)
         return arithmetic_expression
 
     def boolean_expression(self, items):
         items[1] = str(items[1])
         boolean_exp = BEElement(*items)
-        #print('boolean_expression', boolean_exp)
+        # print('boolean_expression', boolean_exp)
         return boolean_exp
 
     def string_expression(self, items):
         string_expression = SEElement(items)
-        #print('string_expression', string_expression)
+        # print('string_expression', string_expression)
         return string_expression
 
     def print_statement(self, str_expression):
         print_statement = PrintElement(str_expression[0])
-        #print('print', print_statement)
+        # print('print', print_statement)
         return print_statement
 
     def for_statement(self, items):
         for_state = ForElement(*items)
-        #print('for', for_state)
+        # print('for', for_state)
         return for_state
 
     def if_statement(self, items):
         if_state = IfElement(*items)
-        #print('if', if_state)
+        # print('if', if_state)
         return if_state
 
     def assign(self, pair):
         assignation = AssignElement(*pair)
-        #print('assign', assignation)
+        # print('assign', assignation)
         return assignation
 
     def string_list(self, string_list):
-        #print('str list', string_list)
+        # print('str list', string_list)
         return string_list
 
     def string(self, string):
-        string = string[0][1:-1].replace('\\n', '\n')
-        #print('string', string.__repr__())
+        string = string[0][1:-1].replace('\\n', '\n').replace('\\t', '\t')
+        # print('string', string.__repr__())
         return string
 
     def integer(self, integer):
         integer = int(integer[0])
-        #print('integer', integer)
-        return int(integer)
+        # print('integer', integer)
+        return integer
 
     def variable(self, name):
         name = name[0]
         variable = VariableElement(name)
-        #print('variable', variable)
+        # print('variable', variable)
         return variable
 
     def true(self, item):
-        item = bool(item)
-        #print('bool', item)
+        # print('bool', item)
         return True
 
     def false(self, item):
-        item =bool(item)
-        #print('bool', item)
+        # print('bool', item)
         return False
 
     def txt(self, text):
         text = str(text[0])
-        #print('Txt', text)
+        # print('Txt', text)
         return text
 
 

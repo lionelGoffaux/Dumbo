@@ -1,0 +1,7 @@
+{{
+label := 'realises par Tony Kaye';
+liste_label := ('American History X', 'Snowblind', 'Lake of Fire');
+i := 42;
+t := true;
+f := false;
+}}

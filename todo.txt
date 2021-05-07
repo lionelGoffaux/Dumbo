@@ -1,10 +1,6 @@
-input data
-les \*
+les \* -> n et t
 () bool
-error variable existe pas
-error iterator pas iterable
 error parser lark (voir github)
-print -> dumbo style
 
 doc
 tests?

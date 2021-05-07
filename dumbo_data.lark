@@ -1,0 +1,27 @@
+program: (txt|dumbo_block)+
+
+?dumbo_block: "{{" expressions_list "}}"
+
+expressions_list: (expression ";")*
+
+expression: variable ":=" (string_expression|string_list) -> assign
+
+?string_expression: string_expression "." string_expression
+                  | string
+                  | "true" -> true
+                  | "false" -> false
+                  | integer
+
+string_list: "(" string ("," string)* ")"
+variable: CNAME
+integer: INT
+string: ESCAPED_STRING
+txt: /((?!{{)(.|\n))+/
+
+ESCAPED_STRING: "'" _STRING_ESC_INNER "'"
+
+%import common._STRING_ESC_INNER
+%import common.CNAME
+%import common.INT
+%import common.WS
+%ignore WS

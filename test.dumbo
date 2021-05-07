@@ -6,13 +6,9 @@
 </head>
 <body>
     {{
-     a := ('hello', ' ', 'world!');
-     for i in a do
-        b := 45;
-        print b;
-     endfor;
-     print '\n    ';
-     print b;
+     a := ('false', 'test');
+
+     print a.liste_label;
     }}
 </body>
 </html>
