@@ -67,7 +67,7 @@ class SEElement(DumboElement):
 
 class AEElement(DumboElement):
 
-    def __init__(self, op: 'str', left: Union[int, VariableElement, AEElement],
+    def __init__(self, left: Union[int, VariableElement, AEElement], op: str,
                  right: Union[int, VariableElement, AEElement]):
         self.left = left
         self.right = right
@@ -79,7 +79,7 @@ class AEElement(DumboElement):
 
 class BEElement(DumboElement):
 
-    def __init__(self, op: str, left: Union[BEElement, AEElement, bool],
+    def __init__(self, left: Union[BEElement, AEElement, bool], op: str,
                  right: Union[BEElement, AEElement, bool]):
         self.left = left
         self.right = right
@@ -138,13 +138,16 @@ class DumboTransformer(Transformer):
         return expression_list
 
     def arithmetic_expression(self, items):
-        arithmetic_expression = AEElement(str(items[1]), items[0], items[2])
+        items[1] = str(items[1])
+        arithmetic_expression = AEElement(*items)
         #print('arithmetic_expression', arithmetic_expression)
         return arithmetic_expression
 
     def boolean_expression(self, items):
-        print('boolean_expression', items)
-        return items
+        items[1] = str(items[1])
+        boolean_exp = BEElement(*items)
+        #print('boolean_expression', boolean_exp)
+        return boolean_exp
 
     def string_expression(self, items):
         string_expression = SEElement(items)
@@ -205,3 +208,9 @@ class DumboTransformer(Transformer):
         text = str(text[0])
         #print('Txt', text)
         return text
+
+
+with open('dumbo.lark', 'r') as f:
+    grammar = f.read()
+
+dumbo_parser = Lark(grammar, parser='lalr', transformer=DumboTransformer(), start='program')
