@@ -79,8 +79,10 @@ class AEElement(DumboElement):
 
 class BEElement(DumboElement):
 
-    def __init__(self, op: str, boolean_expression: Union[list[BEElement], list[AEElement], bool]):
-        self.boolean_expression = boolean_expression
+    def __init__(self, op: str, left: Union[BEElement, AEElement, bool],
+                 right: Union[BEElement, AEElement, bool]):
+        self.left = left
+        self.right = right
         self.op = op
 
     def accept(self, visitor: Visitor) -> bool:
