@@ -2,7 +2,7 @@ import unittest
 import dumboParser as dp
 
 
-class TransformerTest(unittest.TestCase):
+class DumboParserTest(unittest.TestCase):
 
     def test_program(self) -> None:
         src = "<test>{{ print 'Hello World!'; }}</test>"
@@ -54,7 +54,7 @@ class TransformerTest(unittest.TestCase):
             self.assertIn(type(assign.value), dp.primitives + [dp.SEElement, dp.AEElement,
                                                                dp.BEElement, dp.VariableElement])
 
-    def test_ifElement(self):
+    def test_ifElement(self) -> None:
         src_list = ["{{if true do print i; endif;}}",
                     "{{if true and true  do print i; endif;}}"]
         for src in src_list:
@@ -64,8 +64,7 @@ class TransformerTest(unittest.TestCase):
             self.assertIn(type(if_element.boolean_expression), [dp.VariableElement, dp.BEElement, bool])
             self.assertIs(type(if_element.expressions_list), dp.ExpressionsListElement)
 
-
-    def test_forElement(self):
+    def test_forElement(self) -> None:
         src = "{{for i in list do print i; endfor;}}"
         program = dp.dumbo_parser.parse(src)
         for_element = program.content[0].expressions_list[0]
@@ -120,3 +119,36 @@ class TransformerTest(unittest.TestCase):
         program = dp.dumbo_parser.parse(src)
         list_element = program.content[0].expressions_list[0].value
         self.assertIs(type(list_element), list)
+
+    def test_example(self) -> None:
+        with open('test.dumbo') as src_file:
+            src = src_file.read()
+
+        program = dp.dumbo_parser.parse(src)
+        self.assertIs(type(program), dp.ProgramElement)
+        self.assertEquals(len(program.content), 11)
+        for element in program.content[0:11:2]:
+            self.assertIs(type(element), str)
+        for element in program.content[1:11:2]:
+            self.assertIs(type(element), dp.ExpressionsListElement)
+
+        for block in program.content[1:4:2] + program.content[7:10:2]:
+            self.assertEquals(len(block.expressions_list), 1)
+            self.assertIs(type(block.expressions_list[0]), dp.PrintElement)
+
+        main_block = program.content[5]
+        self.assertEquals(len(main_block.expressions_list), 2)
+        self.assertIs(type(main_block.expressions_list[0]), dp.AssignElement)
+
+        for_element = main_block.expressions_list[1]
+        self.assertIs(type(for_element), dp.ForElement)
+        self.assertIs(type(for_element.iterator_var), dp.VariableElement)
+        self.assertIs(type(for_element.iterator), dp.VariableElement)
+
+        for_instructions = for_element.expressions_list.expressions_list
+        self.assertEquals(len(for_instructions), 3)
+        self.assertIs(type(for_instructions[0]), dp.IfElement)
+        self.assertEquals(len(for_instructions[0].expressions_list.expressions_list), 1)
+        self.assertIs(type(for_instructions[0].expressions_list.expressions_list[0]), dp.PrintElement)
+        self.assertIs(type(for_instructions[1]), dp.PrintElement)
+        self.assertIs(type(for_instructions[2]), dp.AssignElement)

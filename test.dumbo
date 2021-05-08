@@ -1,14 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{print 'Hello, world!';}}</title>
-</head>
+<html>
+<head><title>{{ print nom; }}</title ></head>
 <body>
-    {{
-     if true do
-     print t;
-     endif;
-    }}
+<h1>{{ print nom; }}</h1>
+{{
+i := 0;
+for nom in liste_photo do
+    if i > 0 do print ', ' ; endif;
+    print '<a href="'. nom . '"> ' . nom . '</a>' ;
+    i := i + 1 ;
+endfor ;
+}}
+<br/>
+il y a {{ print i ; }} dans l'album {{ print nom; }} .
 </body>
 </html>
