@@ -1,12 +1,13 @@
-les \* -> n et t
+rapport
+argh
+tests
+
+
+type checking + - * < > =
+\\n not escaped
 () bool
 error parser lark (voir github)
 opti parser
-argh
 if var ? tester
 primitive element?
-verbose interpreter
-rapport
-tests
-
 doc

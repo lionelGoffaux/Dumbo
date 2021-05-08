@@ -143,6 +143,9 @@ class DumboTransformer(Transformer):
         # print('arithmetic_expression', arithmetic_expression)
         return arithmetic_expression
 
+    def product(self, items):
+        return self.arithmetic_expression(items)
+
     def boolean_expression(self, items):
         items[1] = str(items[1])
         boolean_exp = BEElement(*items)
@@ -189,7 +192,7 @@ class DumboTransformer(Transformer):
         return integer
 
     def variable(self, name):
-        name = name[0]
+        name = str(name[0])
         variable = VariableElement(name)
         # print('variable', variable)
         return variable

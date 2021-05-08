@@ -152,3 +152,7 @@ class DumboParserTest(unittest.TestCase):
         self.assertIs(type(for_instructions[0].expressions_list.expressions_list[0]), dp.PrintElement)
         self.assertIs(type(for_instructions[1]), dp.PrintElement)
         self.assertIs(type(for_instructions[2]), dp.AssignElement)
+
+
+if __name__ == '__main__':
+    unittest.main()

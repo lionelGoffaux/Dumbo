@@ -18,8 +18,10 @@ class NotIterableError(Exception):
 
 class Interpreter(Visitor):
 
-    def __init__(self, scope):
+    def __init__(self, scope, verbose=True):
         self.scope = scope
+        self.result = ''
+        self.verbose = verbose
 
     def visit_print_element(self, element: dp.PrintElement) -> None:
         replacements = {
@@ -31,7 +33,10 @@ class Interpreter(Visitor):
         tmp = element.str_expression
         if type(element.str_expression) not in [str, int, bool, list]:
             tmp = element.str_expression.accept(self)
-        print(replacements[type(tmp)](tmp), end='')
+        result = replacements[type(tmp)](tmp)
+        self.result += result
+        if self.verbose:
+            print(result, end='')
 
     def visit_for_element(self, element: dp.ForElement) -> None:
         if type(element.iterator) is dp.VariableElement:
@@ -63,7 +68,7 @@ class Interpreter(Visitor):
             '+': lambda x, y: x + y,
             '-': lambda x, y: x - y,
             '*': lambda x, y: x * y,
-            '/': lambda x, y: x / y
+            '/': lambda x, y: x // y
         }
         left = element.left
         right = element.right
@@ -105,7 +110,9 @@ class Interpreter(Visitor):
     def visit_program_element(self, element: dp.ProgramElement) -> None:
         for el in element.content:
             if type(el) is str:
-                print(el, end='')
+                self.result += el
+                if self.verbose:
+                    print(el, end='')
             else:
                 el.accept(self)
 

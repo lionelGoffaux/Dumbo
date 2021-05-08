@@ -9,10 +9,14 @@ expression: "print" string_expression -> print_statement
           | "if" boolean_expression "do" expressions_list "endif" -> if_statement
           | variable ":=" (string_expression|string_list) -> assign
 
-?arithmetic_expression: arithmetic_expression ADD_OP arithmetic_expression
-                      | arithmetic_expression MULL_OP arithmetic_expression
-                      | "(" arithmetic_expression ")"
-                      | (integer|variable)
+?arithmetic_expression: product ADD_OP product
+                      | product
+
+?product: factor MULL_OP factor
+        | factor
+
+?factor: "(" arithmetic_expression ")"
+      | (integer|variable)
 
 ?string_expression: string_expression "." string_expression
                   | (string | arithmetic_expression | boolean_expression)
