@@ -1,7 +1,7 @@
 {{
 label := 'realises par Tony Kaye';
-liste_label := ('American History X', 'Snowblind', 'Lake of Fire');
-i := 42;
+liste_photo := ('American History X', 'Snowblind', 'Lake of Fire');
 t := true;
 f := false;
+nom := 'test';
 }}

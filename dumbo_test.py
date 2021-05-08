@@ -1,6 +1,5 @@
 import unittest
 
-from data import Scope
 from dumboParser import dumbo_parser
 from dumbo import Interpreter, BadReferenceError, NotIterableError
 
@@ -8,7 +7,7 @@ from dumbo import Interpreter, BadReferenceError, NotIterableError
 class InterpreterTest(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.interpreter = Interpreter(Scope(), verbose=False)
+        self.interpreter = Interpreter({}, verbose=False)
 
     def assertExecutionResult(self, src, expected):
         program = dumbo_parser.parse(src)
@@ -99,6 +98,11 @@ class InterpreterTest(unittest.TestCase):
     def test_forVarScope(self) -> None:
         src = "{{for i in ('Hello', 'World!') do a := 42; endfor; print i;}}"
         expected = 'World!'
+        self.assertExecutionResult(src, expected)
+
+    def test_globalScope(self) -> None:
+        src = "{{var := 42;}}var = {{print var;}}"
+        expected = 'var = 42'
         self.assertExecutionResult(src, expected)
 
     def test_badRefError(self) -> None:
