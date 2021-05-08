@@ -1,30 +1,10 @@
-from collections import ChainMap
 from lark import Transformer, Lark
-
-
-class Scope(ChainMap):
-    """Variant of ChainMap that allows direct updates to inner scopes
-    source : https://docs.python.org/3/library/collections.html#collections.ChainMap"""
-
-    def __setitem__(self, key, value):
-        for mapping in self.maps:
-            if key in mapping:
-                mapping[key] = value
-                return
-        self.maps[0][key] = value
-
-    def __delitem__(self, key):
-        for mapping in self.maps:
-            if key in mapping:
-                del mapping[key]
-                return
-        raise KeyError(key)
 
 
 class DataTransformer(Transformer):
 
     def __init__(self):
-        self.scope = Scope()
+        self.scope = {}
         super().__init__()
 
     def program(self, items):
@@ -36,7 +16,8 @@ class DataTransformer(Transformer):
         return items
 
     def variable(self, items):
-        return items[0]
+        # print(type(items[0]))
+        return str(items[0])
 
     def string(self, items):
         # print(items[0])

@@ -11,6 +11,6 @@ for nom in liste_photo do
 endfor ;
 }}
 <br/>
-il y a {{ print i ; }} dans l'album {{ print nom; }} .
+il y a {{ print i ; }} dans l'album {{ print nom; }}.
 </body>
 </html>

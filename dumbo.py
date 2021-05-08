@@ -3,7 +3,27 @@ from typing import Union
 import dumboParser as dp
 from visitors import Visitor
 from data import data_parser
+from collections import ChainMap
 import argh
+
+
+class Scope(ChainMap):
+    """Variant of ChainMap that allows direct updates to inner scopes
+    source : https://docs.python.org/3/library/collections.html#collections.ChainMap"""
+
+    def __setitem__(self, key, value):
+        for mapping in self.maps:
+            if key in mapping:
+                mapping[key] = value
+                return
+        self.maps[0][key] = value
+
+    def __delitem__(self, key):
+        for mapping in self.maps:
+            if key in mapping:
+                del mapping[key]
+                return
+        raise KeyError(key)
 
 
 class BadReferenceError(Exception):
@@ -19,21 +39,22 @@ class NotIterableError(Exception):
 class Interpreter(Visitor):
 
     def __init__(self, scope):
-        self.scope = scope
-
-    def visit_print_element(self, element: dp.PrintElement) -> None:
-        replacements = {
+        self.scope = Scope(scope)
+        self.replacements = {
             bool: lambda x: 'true' if x else 'false',
             list: lambda x: str(x).replace('[', '(').replace(']', ')'),
             int: lambda x: str(x),
             str: lambda x: x
         }
+
+    def visit_print_element(self, element: dp.PrintElement) -> None:
         tmp = element.str_expression
-        if type(element.str_expression) not in [str, int, bool, list]:
+        if type(element.str_expression) not in dp.primitives:
             tmp = element.str_expression.accept(self)
-        print(replacements[type(tmp)](tmp), end='')
+        print(self.replacements[type(tmp)](tmp), end='')
 
     def visit_for_element(self, element: dp.ForElement) -> None:
+        self.scope = self.scope.new_child()
         if type(element.iterator) is dp.VariableElement:
             iterator = element.iterator.accept(self)
         else:
@@ -43,19 +64,14 @@ class Interpreter(Visitor):
         for string in iterator:
             self.scope[element.iterator_var.name] = string
             element.expressions_list.accept(self)
+        self.scope = self.scope.parents
 
     def visit_se_element(self, element: dp.SEElement) -> str:
-        replacements = {
-            bool: lambda x: 'true' if x else 'false',
-            list: lambda x: str(x).replace('[', '(').replace(']', ')'),
-            int: lambda x: str(x),
-            str: lambda x: x
-        }
         res = ''
         for e in element.subExpressions:
-            if type(e) not in [str, int, bool, list]:
+            if type(e) not in dp.primitives:
                 e = e.accept(self)
-            res += replacements[type(e)](e)
+            res += self.replacements[type(e)](e)
         return res
 
     def visit_ae_element(self, element: dp.AEElement) -> int:
@@ -91,13 +107,12 @@ class Interpreter(Visitor):
         return operations[element.op](left, right)
 
     def visit_expressions_list_element(self, element: dp.ExpressionsListElement) -> None:
-        self.scope = self.scope.new_child()
         for exp in element.expressions_list:
             exp.accept(self)
-        self.scope = self.scope.parents
+
 
     def visit_assign_element(self, element: dp.AssignElement) -> None:
-        if type(element.value) in [str, int, bool, list]:
+        if type(element.value) in dp.primitives:
             self.scope[element.variable.name] = element.value
         else:
             self.scope[element.variable.name] = element.value.accept(self)
@@ -115,11 +130,13 @@ class Interpreter(Visitor):
         raise BadReferenceError(element.name)
 
     def visit_if_element(self, element: dp.IfElement) -> None:
+        self.scope = self.scope.new_child()
         condition = element.boolean_expression if type(element.boolean_expression) is bool \
             else element.boolean_expression.accept(self)
 
         if condition:
             element.expressions_list.accept(self)
+        self.scope = self.scope.parents
 
 
 def main(src_file_name):
@@ -130,6 +147,7 @@ def main(src_file_name):
         src = src_file.read()
     program = dp.dumbo_parser.parse(src)
     interpreter = Interpreter(scope)
+    print(interpreter.scope)
     program.accept(interpreter)
 
 
