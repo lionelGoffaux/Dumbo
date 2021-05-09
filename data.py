@@ -11,16 +11,13 @@ class DataTransformer(Transformer):
         return self.scope
 
     def assign(self, items):
-        # print(items[0])
         self.scope[items[0]] = items[1]
         return items
 
     def variable(self, items):
-        # print(type(items[0]))
         return str(items[0])
 
     def string(self, items):
-        # print(items[0])
         return items[0][1:-1]
 
     def true(self, items):

@@ -1,16 +1,16 @@
 <html>
 <head><title>{{ print nom; }}</title ></head>
 <body>
-<h1>{{ print nom; }}</h1>
-{{
-i := 0;
-for nom in liste_photo do
-    if i > 0 do print ', ' ; endif;
-    print '<a href="'. nom . '"> ' . nom . '</a>' ;
-    i := i + 1 ;
-endfor ;
-}}
-<br/>
-il y a {{ print i ; }} dans l'album {{ print nom; }}.
+    <h1>{{ print nom; }}</h1>
+    {{
+    i := 0;
+    for nom in liste_photo do
+        if i > 0 do print ', ' ; endif;
+        print '<a href="'. nom . '"> ' . nom . '</a>' ;
+        i := i + 1 ;
+    endfor ;
+    }}
+    <br/>
+    il y a {{ print i ; }} dans l'album {{ print nom; }}.
 </body>
 </html>

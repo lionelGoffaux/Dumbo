@@ -1,6 +1,4 @@
-program: (txt|dumbo_block)+
-
-?dumbo_block: "{{" expressions_list "}}"
+program: "{{" expressions_list "}}"
 
 expressions_list: (expression ";")*
 
@@ -16,7 +14,6 @@ string_list: "(" string ("," string)* ")"
 variable: CNAME
 integer: INT
 string: ESCAPED_STRING
-txt: /((?!{{)(.|\n))+/
 
 ESCAPED_STRING: "'" _STRING_ESC_INNER "'"
 

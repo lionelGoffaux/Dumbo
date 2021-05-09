@@ -38,7 +38,7 @@ class NotIterableError(Exception):
 
 class Interpreter(Visitor):
 
-    def __init__(self, scope, verbose=True):
+    def __init__(self, scope, verbose=False):
         self.scope = Scope(scope)
         self.result = ''
         self.verbose = verbose
@@ -129,6 +129,8 @@ class Interpreter(Visitor):
                     print(el, end='')
             else:
                 el.accept(self)
+        if self.verbose:
+            print()
 
     def visit_variable_element(self, element: dp.VariableElement) -> Union[int, str, bool, list[str]]:
         if element.name in self.scope:
@@ -145,17 +147,16 @@ class Interpreter(Visitor):
             self.scope = self.scope.parents
 
 
-def main(src_file_name):
-    with open('test_data.dumbo', 'r') as data_file:
+def main(data_file_name, src_file_name):
+    with open(data_file_name) as data_file:
         data = data_file.read()
     scope = data_parser.parse(data)
     with open(src_file_name) as src_file:
         src = src_file.read()
     program = dp.dumbo_parser.parse(src)
-    interpreter = Interpreter(scope)
-    print(interpreter.scope)
+    interpreter = Interpreter(scope, verbose=True)
     program.accept(interpreter)
 
 
 if __name__ == '__main__':
-    main("test.dumbo")
+    argh.dispatch_command(main)

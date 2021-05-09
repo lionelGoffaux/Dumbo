@@ -108,14 +108,6 @@ class VariableElement(DumboElement):
         return visitor.visit_variable_element(self)
 
 
-'''class TXTElement(DumboElement):
-    def __init__(self, text: str):
-        self.text = text
-
-    def accept(self, visitor: Visitor) -> None:
-        visitor.visit_txt_element(self)'''
-
-
 class ProgramElement(DumboElement):
 
     def __init__(self, content: list[Union[str, ExpressionsListElement]]):
@@ -128,87 +120,59 @@ class ProgramElement(DumboElement):
 class DumboTransformer(Transformer):
 
     def program(self, items):
-        program = ProgramElement(items)
-        # print('program', program)
-        return program
+        return ProgramElement(items)
 
     def expressions_list(self, items):
-        expression_list = ExpressionsListElement(items)
-        # print('expressions_list', expression_list)
-        return expression_list
+        return ExpressionsListElement(items)
+
 
     def arithmetic_expression(self, items):
         items[1] = str(items[1])
-        arithmetic_expression = AEElement(*items)
-        # print('arithmetic_expression', arithmetic_expression)
-        return arithmetic_expression
+        return AEElement(*items)
 
     def product(self, items):
         return self.arithmetic_expression(items)
 
     def boolean_expression(self, items):
         items[1] = str(items[1])
-        boolean_exp = BEElement(*items)
-        # print('boolean_expression', boolean_exp)
-        return boolean_exp
+        return BEElement(*items)
 
     def string_expression(self, items):
-        string_expression = SEElement(items)
-        # print('string_expression', string_expression)
-        return string_expression
+        return SEElement(items)
 
     def print_statement(self, str_expression):
-        print_statement = PrintElement(str_expression[0])
-        # print('print', print_statement)
-        return print_statement
+        return PrintElement(str_expression[0])
 
     def for_statement(self, items):
-        for_state = ForElement(*items)
-        # print('for', for_state)
-        return for_state
+        return ForElement(*items)
 
     def if_statement(self, items):
-        if_state = IfElement(*items)
-        # print('if', if_state)
-        return if_state
+        return IfElement(*items)
 
     def assign(self, pair):
-        assignation = AssignElement(*pair)
-        # print('assign', assignation)
-        return assignation
+        return AssignElement(*pair)
 
     def string_list(self, string_list):
-        # print('str list', string_list)
         return string_list
 
     def string(self, string):
-        string = string[0][1:-1].replace('\\n', '\n').replace('\\t', '\t')
-        # print('string', string.__repr__())
-        return string
+        return string[0][1:-1].replace('\\n', '\n').replace('\\t', '\t')
 
     def integer(self, integer):
-        integer = int(integer[0])
-        # print('integer', integer)
-        return integer
+        return int(integer[0])
 
     def variable(self, name):
         name = str(name[0])
-        variable = VariableElement(name)
-        # print('variable', variable)
-        return variable
+        return VariableElement(name)
 
     def true(self, item):
-        # print('bool', item)
         return True
 
     def false(self, item):
-        # print('bool', item)
         return False
 
     def txt(self, text):
-        text = str(text[0])
-        # print('Txt', text)
-        return text
+        return str(text[0])
 
 
 primitives = [int, list, bool, str]
