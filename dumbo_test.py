@@ -12,7 +12,7 @@ class InterpreterTest(unittest.TestCase):
     def assertExecutionResult(self, src, expected):
         program = dumbo_parser.parse(src)
         program.accept(self.interpreter)
-        self.assertEquals(self.interpreter.result, expected)
+        self.assertEqual(self.interpreter.result, expected)
 
     def test_textBlock(self) -> None:
         src = "text block"

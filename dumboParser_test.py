@@ -9,7 +9,7 @@ class DumboParserTest(unittest.TestCase):
         program = dp.dumbo_parser.parse(src)
         self.assertIs(type(program), dp.ProgramElement)
         self.assertIs(type(program.content), list)
-        self.assertEquals(len(program.content), 3)
+        self.assertEqual(len(program.content), 3)
 
     def test_txt(self) -> None:
         src = "<test>Hello World!</test>"
@@ -22,7 +22,7 @@ class DumboParserTest(unittest.TestCase):
         expr_list = program.content[0]
         self.assertIs(type(expr_list), dp.ExpressionsListElement)
         self.assertIs(type(expr_list.expressions_list), list)
-        self.assertEquals(len(expr_list.expressions_list), 1)
+        self.assertEqual(len(expr_list.expressions_list), 1)
 
     def test_printElement(self) -> None:
         src_list = ["{{print 'Hello World!';}}", "{{print 4;}}", "{{print true;}}", "{{print var;}}",
@@ -39,7 +39,7 @@ class DumboParserTest(unittest.TestCase):
         program = dp.dumbo_parser.parse(src)
         var_element = program.content[0].expressions_list[0].str_expression
         self.assertIs(type(var_element), dp.VariableElement)
-        self.assertEquals(var_element.name, "var")
+        self.assertEqual(var_element.name, "var")
 
     def test_assignElement(self) -> None:
         src_list = ["{{var := 42;}}", "{{var := True;}}", "{{var := 'Hello World!';}}", "{{var := 42 + 8;}}",
@@ -126,14 +126,14 @@ class DumboParserTest(unittest.TestCase):
 
         program = dp.dumbo_parser.parse(src)
         self.assertIs(type(program), dp.ProgramElement)
-        self.assertEquals(len(program.content), 11)
+        self.assertEqual(len(program.content), 11)
         for element in program.content[0:11:2]:
             self.assertIs(type(element), str)
         for element in program.content[1:11:2]:
             self.assertIs(type(element), dp.ExpressionsListElement)
 
         for block in program.content[1:4:2] + program.content[7:10:2]:
-            self.assertEquals(len(block.expressions_list), 1)
+            self.assertEqual(len(block.expressions_list), 1)
             self.assertIs(type(block.expressions_list[0]), dp.PrintElement)
 
         main_block = program.content[5]
@@ -146,9 +146,9 @@ class DumboParserTest(unittest.TestCase):
         self.assertIs(type(for_element.iterator), dp.VariableElement)
 
         for_instructions = for_element.expressions_list.expressions_list
-        self.assertEquals(len(for_instructions), 3)
+        self.assertEqual(len(for_instructions), 3)
         self.assertIs(type(for_instructions[0]), dp.IfElement)
-        self.assertEquals(len(for_instructions[0].expressions_list.expressions_list), 1)
+        self.assertEqual(len(for_instructions[0].expressions_list.expressions_list), 1)
         self.assertIs(type(for_instructions[0].expressions_list.expressions_list[0]), dp.PrintElement)
         self.assertIs(type(for_instructions[1]), dp.PrintElement)
         self.assertIs(type(for_instructions[2]), dp.AssignElement)

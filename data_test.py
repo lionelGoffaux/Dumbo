@@ -15,7 +15,7 @@ class DataTest(unittest.TestCase):
         expected = {'a': 42, 'b': 'Hello World!', 'c': True, 'd': False,
                     'e': ['Hello', 'World!']}
         scope = data_parser.parse(src)
-        self.assertEquals(scope, expected)
+        self.assertEqual(scope, expected)
 
 
 if __name__ == '__main__':
