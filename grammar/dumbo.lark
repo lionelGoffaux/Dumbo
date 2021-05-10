@@ -16,15 +16,15 @@ expression: "print" string_expression -> print_statement
         | factor
 
 ?factor: "(" arithmetic_expression ")"
-      | (integer|variable)
+       | (integer|variable)
 
 ?string_expression: string_expression "." string_expression
                   | (string | arithmetic_expression | boolean_expression)
 
 !boolean_expression: boolean_expression LOG_OP boolean_expression
-                  | arithmetic_expression COMP_OP arithmetic_expression
-                  | "true" -> true
-                  | "false" -> false
+                   | arithmetic_expression COMP_OP arithmetic_expression
+                   | "true" -> true
+                   | "false" -> false
 
 string_list: "(" string ("," string)* ")"
 variable: CNAME
