@@ -137,7 +137,7 @@ class DumboParserTest(unittest.TestCase):
             self.assertIs(type(block.expressions_list[0]), dp.PrintElement)
 
         main_block = program.content[5]
-        self.assertEquals(len(main_block.expressions_list), 2)
+        self.assertEqual(len(main_block.expressions_list), 2)
         self.assertIs(type(main_block.expressions_list[0]), dp.AssignElement)
 
         for_element = main_block.expressions_list[1]

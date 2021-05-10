@@ -33,7 +33,7 @@ class DataTransformer(Transformer):
         return items
 
 
-with open('dumbo_data.lark', 'r') as f:
+with open('grammar/dumbo_data.lark', 'r') as f:
     grammar = f.read()
 
 data_parser = Lark(grammar, parser='lalr', transformer=DataTransformer(), start='program')

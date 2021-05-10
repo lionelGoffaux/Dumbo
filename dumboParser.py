@@ -125,7 +125,6 @@ class DumboTransformer(Transformer):
     def expressions_list(self, items):
         return ExpressionsListElement(items)
 
-
     def arithmetic_expression(self, items):
         items[1] = str(items[1])
         return AEElement(*items)
@@ -177,7 +176,7 @@ class DumboTransformer(Transformer):
 
 primitives = [int, list, bool, str]
 
-with open('dumbo.lark', 'r') as f:
+with open('grammar/dumbo.lark', 'r') as f:
     grammar = f.read()
 
 dumbo_parser = Lark(grammar, parser='lalr', transformer=DumboTransformer(), start='program')
