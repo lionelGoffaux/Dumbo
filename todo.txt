@@ -1,6 +1,3 @@
-rapport
-
-
 type checking + - * < > =
 \\n not escaped
 () bool
